@@ -20,7 +20,6 @@ jobs:
           binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi \
           libghc-libyaml-dev libyaml-dev glibc-source \
     
-    
     - name: Open SSH Session
       uses: mxschmitt/action-tmate@v3
       
