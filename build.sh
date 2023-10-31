@@ -48,21 +48,21 @@ tg_error() {
 }
 
 
-export PATH="$HOME/cosmic/bin:$PATH"
+export PATH="$HOME/proton/bin:$PATH"
 export ARCH=arm64
 export SUBARCH=arm64
-export KBUILD_COMPILER_STRING="$($HOME/cosmic/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+export KBUILD_COMPILER_STRING="$($HOME/proton/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 
 # clone AnyKernel3
 if ! [ -d "AnyKernel3" ]; then
     git clone https://github.com/kutemeikito/AnyKernel3
 else
-    echo "${bold}Direktori AnyKernel3 Sudah Ada,"
+    echo "AnyKernel3 already exist,"
 fi
 
-if ! [ -d "$HOME/cosmic" ]; then
-echo "Cosmic clang not found! Cloning..."
-if ! git clone -q https://github.com/kdrag0n/proton-clang.git --depth=1 -b master ~/cosmic; then ## ini Clang nya tools untuk membangun/compile kernel nya (tidak semua kernel mendukung clang)
+if ! [ -d "$HOME/proton" ]; then
+echo "proton clang not found! Cloning..."
+if ! git clone -q https://github.com/kdrag0n/proton-clang.git --depth=1 -b master ~/proton; then ## ini Clang nya tools untuk membangun/compile kernel nya (tidak semua kernel mendukung clang)
 echo "Cloning failed! Aborting..."
 exit 1
 fi
