@@ -48,11 +48,6 @@ tg_error() {
 }
 
 
-export PATH="$HOME/proton/bin:$PATH"
-export ARCH=arm64
-export SUBARCH=arm64
-export KBUILD_COMPILER_STRING="$($HOME/proton/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-
 # clone AnyKernel3
 if ! [ -d "AnyKernel3" ]; then
     git clone https://github.com/kutemeikito/AnyKernel3
@@ -67,6 +62,13 @@ echo "Cloning failed! Aborting..."
 exit 1
 fi
 fi
+
+
+export PATH="$HOME/proton/bin:$PATH"
+export ARCH=arm64
+export SUBARCH=arm64
+export KBUILD_COMPILER_STRING="$($HOME/proton/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+
 
 # Speed up build process
 MAKE="./makeparallel"
