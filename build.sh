@@ -1,4 +1,4 @@
-#!/bin/bash
+4#!/bin/bash
 
 #set -e
 
@@ -57,12 +57,12 @@ export KBUILD_COMPILER_STRING="$($HOME/cosmic/bin/clang --version | head -n 1 | 
 if ! [ -d "AnyKernel3" ]; then
     git clone https://github.com/kutemeikito/AnyKernel3
 else
-    echo "${bold}Direktori AnyKernel3 Sudah Ada, Tidak Perlu di Clone${normal}"
+    echo "${bold}Direktori AnyKernel3 Sudah Ada,"
 fi
 
 if ! [ -d "$HOME/cosmic" ]; then
 echo "Cosmic clang not found! Cloning..."
-if ! if ! git clone -q https://github.com/kdrag0n/proton-clang.git --depth=1 -b master ~/cosmic; then ## ini Clang nya tools untuk membangun/compile kernel nya (tidak semua kernel mendukung clang)
+if ! git clone -q https://github.com/kdrag0n/proton-clang.git --depth=1 -b master ~/cosmic; then ## ini Clang nya tools untuk membangun/compile kernel nya (tidak semua kernel mendukung clang)
 echo "Cloning failed! Aborting..."
 exit 1
 fi
