@@ -1,0 +1,16 @@
+name: tmate session
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: sudo touch /continue
+    
+    - name: Open SSH Session
+      uses: mxschmitt/action-tmate@v3
+      
+    - name: Block to allow introspection of failures
