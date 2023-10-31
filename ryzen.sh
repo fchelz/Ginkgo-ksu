@@ -65,7 +65,7 @@ while (( ${#} )); do
 done
 
 
-[[ -Z ${ZIP} ]] && { echo "${bold}Gunakan -Z atau --zip Untuk Membuat Zip Kernel Installer${normal}"; }
+[[ -z ${ZIP} ]] && { echo "${bold}Gunakan -Z atau --zip Untuk Membuat Zip Kernel Installer${normal}"; }
 
 # Clone toolchain
 if ! [ -d "$HOME/cosmic" ]; then
