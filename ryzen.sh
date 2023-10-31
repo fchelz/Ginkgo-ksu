@@ -70,7 +70,7 @@ done
 # Clone toolchain
 if ! [ -d "$HOME/cosmic" ]; then
 echo "Cosmic clang not found! Cloning..."
-if ! git clone -q https://gitlab.com/PixelOS-Devices/playgroundtc.git --depth=1 -b 17 ~/cosmic; then ## ini Clang nya tools untuk membangun/compile kernel nya (tidak semua kernel mendukung clang)
+if ! git clone -q https://github.com/kdrag0n/proton-clang.git --depth=1 -b master ~/cosmic; then ## ini Clang nya tools untuk membangun/compile kernel nya (tidak semua kernel mendukung clang)
 echo "Cloning failed! Aborting..."
 exit 1
 fi
@@ -123,7 +123,7 @@ if ! [ -a "$KERN_IMG" ]; then
     exit 1
 fi
 
-[[ -z ${ZIP} ]] && { exit; }
+[[ -Z ${ZIP} ]] && { exit; }
 
 # clone AnyKernel3
 if ! [ -d "AnyKernel3" ]; then
@@ -167,7 +167,7 @@ TEXT1="
 * System Build* : \`$MESIN\`
 * Date Build* : \`$TGL\` \`$WAKTU\`
 * Last Commit* : \`$KOMIT\`
-* Author* : @fchelz
+* Author* : @DERMEN
 ━━━━━━━━━ஜ۩۞۩ஜ━━━━━━━━"
 
 
