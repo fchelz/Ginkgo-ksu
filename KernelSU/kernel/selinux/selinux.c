@@ -1,7 +1,10 @@
 #include "selinux.h"
 #include "objsec.h"
-
+#include "linux/version.h"
 #include "../klog.h" // IWYU pragma: keep
+#ifndef KSU_COMPAT_USE_SELINUX_STATE
+#include "avc.h"
+#endif
 
 #define KERNEL_SU_DOMAIN "u:r:su:s0"
 
@@ -23,7 +26,10 @@ static int transive_to_domain(const char *domain)
 	}
 
 	error = security_secctx_to_secid(domain, strlen(domain), &sid);
-	pr_info("error: %d, sid: %d\n", error, sid);
+	if (error) {
+		pr_info("security_secctx_to_secid %s -> sid: %d, error: %d\n",
+			domain, sid, error);
+	}
 	if (!error) {
 		if (!ksu_sid)
 			ksu_sid = sid;
@@ -36,10 +42,10 @@ static int transive_to_domain(const char *domain)
 	return error;
 }
 
-void setup_selinux()
+void setup_selinux(const char *domain)
 {
-	if (transive_to_domain(KERNEL_SU_DOMAIN)) {
-		pr_err("transive domain failed.");
+	if (transive_to_domain(domain)) {
+		pr_err("transive domain failed.\n");
 		return;
 	}
 
@@ -54,26 +60,66 @@ if (!is_domain_permissive) {
 void setenforce(bool enforce)
 {
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
+#ifdef KSU_COMPAT_USE_SELINUX_STATE
 	selinux_state.enforcing = enforce;
+#else
+	selinux_enforcing = enforce;
+#endif
 #endif
 }
 
 bool getenforce()
 {
 #ifdef CONFIG_SECURITY_SELINUX_DISABLE
+#ifdef KSU_COMPAT_USE_SELINUX_STATE
 	if (selinux_state.disabled) {
+#else
+	if (selinux_disabled) {
+#endif
 		return false;
 	}
 #endif
 
 #ifdef CONFIG_SECURITY_SELINUX_DEVELOP
+#ifdef KSU_COMPAT_USE_SELINUX_STATE
 	return selinux_state.enforcing;
 #else
-	return false;
+	return selinux_enforcing;
+#endif
+#else
+	return true;
 #endif
 }
+
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0)) &&                         \
+	!defined(KSU_COMPAT_HAS_CURRENT_SID)
+/*
+ * get the subjective security ID of the current task
+ */
+static inline u32 current_sid(void)
+{
+	const struct task_security_struct *tsec = current_security();
+
+	return tsec->sid;
+}
+#endif
 
 bool is_ksu_domain()
 {
 	return ksu_sid && current_sid() == ksu_sid;
+}
+
+bool is_zygote(void *sec)
+{
+	struct task_security_struct *tsec = (struct task_security_struct *)sec;
+	if (!tsec) {
+		return false;
+	}
+	char *domain;
+	u32 seclen;
+	int err = security_secid_to_secctx(tsec->sid, &domain, &seclen);
+	if (err) {
+		return false;
+	}
+	return strncmp("u:r:zygote:s0", domain, seclen) == 0;
 }
